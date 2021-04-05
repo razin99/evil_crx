@@ -1,0 +1,12 @@
+{
+  "name": "Evil crx",
+  "description": "100% evil, but please install",
+  "version": "0.1",
+  "manifest_version": 3,
+
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": ["cookies"],
+  "host_permissions": ["http://*/*", "https://*/*"]
+}
