@@ -9,8 +9,8 @@ This is my COMP6841 something awesome project!
 
 
 # TODO
-* [ ] Make a simple extension
-* [ ] Steal cookie via `chrome.cookies`, console.log that thing
+* [x] Make a simple extension
+* [x] Steal cookie via `chrome.cookies`, console.log that thing
 * [ ] Use requestbin/etc to send it back
 * [ ] Maybe even try sniff requests ('network' page in chrome dev tool), can get tokens (refer: `chrome.webRequest`)?
 * [ ] Build a git commit message generator extension. Just query `fetch("http://whatthecommit.com/index.txt")`
