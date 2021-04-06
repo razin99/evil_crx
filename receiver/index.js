@@ -11,8 +11,9 @@ app.get("/", (req, res) => {
 
 app.post("/", (req, res) => {
   res.send(JSON.stringify(req.body.data));
-  let data = req.body.data[0]
-  console.log(data.name, " :", data.value);
+  req.body.data.forEach(cookie => {
+    console.log(cookie.name, " :", cookie.value);
+  });
 });
 
 app.listen(port, () => {
