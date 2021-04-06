@@ -1,0 +1,31 @@
+body {
+  min-height: 50px;
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  background-color: rgb(80, 80, 80);
+  color: white;
+}
+
+#content {
+  font-size: 24px;
+  margin: 16px;
+}
+
+button {
+  background-color: transparent;
+  border: solid #4095c6;
+  color:white;
+  padding: 8px;
+  border-radius: 10px;
+}
+
+button:hover {
+  cursor: pointer;
+  background-color: #4095c6;
+}
+
+button:focus {
+  outline: none;
+}

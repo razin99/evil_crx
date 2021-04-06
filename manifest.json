@@ -8,5 +8,8 @@
     "service_worker": "background.js"
   },
   "permissions": ["cookies"],
-  "host_permissions": ["http://*/*", "https://*/*"]
+  "host_permissions": ["http://*/*", "https://*/*"],
+  "action": {
+    "default_popup": "popup.html"
+  }
 }
