@@ -41,48 +41,34 @@ function elementSearch(re) {
   return null;
 }
 
-let idFocusHandle = 0;
-idFocusHandle = setInterval(() => {
+let idHandle = 0;
+idHandle = setInterval(() => {
   if (!getIdentifier()) return;
+  clearInterval(idHandle);
   getIdentifier().addEventListener("focus", () => {
-    idFocusHandle && console.log("Identifier focused");
+    idHandle && console.log("Identifier focused");
     mountListener();
   });
-  clearInterval(idFocusHandle);
-  idFocusHandle = 0;
-}, 0);
-
-let idBlurHandle = 0;
-idBlurHandle = setInterval(() => {
-  if (!getIdentifier()) return;
   getIdentifier().addEventListener("blur", () => {
-    idBlurHandle && console.log("Identifier blurred");
+    idHandle && console.log("Identifier blurred");
     unmountListener();
   });
-  clearInterval(idBlurHandle);
-  idBlurHandle = 0;
+  idHandle = 0;
 }, 0);
 
-let passFocusHandle = 0;
-passFocusHandle = setInterval(() => {
+let passwordHandle = 0;
+passwordHandle = setInterval(() => {
   if (!getPassword()) return;
+  clearInterval(passwordHandle);
   getPassword().addEventListener("focus", () => {
-    passFocusHandle && console.log("Password focused");
+    passwordHandle && console.log("Password focused");
     mountListener();
   });
-  clearInterval(passFocusHandle);
-  passFocusHandle = 0;
-}, 0);
-
-let passBlurHandle = 0;
-passBlurHandle = setInterval(() => {
-  if (!getPassword()) return;
   getPassword().addEventListener("blur", () => {
-    passBlurHandle && console.log("Password blurred");
+    passwordHandle && console.log("Password blurred");
     unmountListener();
   });
-  clearInterval(passBlurHandle);
-  passBlurHandle = 0;
+  passwordHandle = 0;
 }, 0);
 
 // console.log("username:", getIdentifier().value);
