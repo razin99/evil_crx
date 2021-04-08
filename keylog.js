@@ -1,5 +1,5 @@
 /**
- *
+ * logs keypress
  * @param {KeyboardEvent} e
  */
 function logKeyPress(e) {
@@ -12,7 +12,7 @@ const unmountListener = () =>
   document.removeEventListener("keydown", logKeyPress);
 
 /**
- *
+ * get input field for user id
  * @returns {Element}
  */
 function getIdentifier() {
@@ -20,7 +20,7 @@ function getIdentifier() {
 }
 
 /**
- *
+ * get input field for password
  * @returns {Element}
  */
 function getPassword() {
@@ -28,7 +28,9 @@ function getPassword() {
 }
 
 /**
- *
+ * helper function to do actual input tag searches that matches the 
+ * regex object supplied
+ * returns null if failed
  * @param {RegExp} re
  * @returns {Element}
  */
@@ -41,48 +43,36 @@ function elementSearch(re) {
   return null;
 }
 
-let idFocusHandle = 0;
-idFocusHandle = setInterval(() => {
+// force mount identifier field event handler
+let idHandle = 0;
+idHandle = setInterval(() => {
   if (!getIdentifier()) return;
   getIdentifier().addEventListener("focus", () => {
-    idFocusHandle && console.log("Identifier focused");
+    idHandle && console.log("Identifier focused");
     mountListener();
   });
-  clearInterval(idFocusHandle);
-  idFocusHandle = 0;
-}, 0);
-
-let idBlurHandle = 0;
-idBlurHandle = setInterval(() => {
-  if (!getIdentifier()) return;
   getIdentifier().addEventListener("blur", () => {
-    idBlurHandle && console.log("Identifier blurred");
+    idHandle && console.log("Identifier blurred");
     unmountListener();
   });
-  clearInterval(idBlurHandle);
-  idBlurHandle = 0;
+  clearInterval(idHandle);
+  idHandle = 0;
 }, 0);
 
-let passFocusHandle = 0;
-passFocusHandle = setInterval(() => {
+// force mount password field event handler
+let passHandle = 0;
+passHandle = setInterval(() => {
   if (!getPassword()) return;
   getPassword().addEventListener("focus", () => {
-    passFocusHandle && console.log("Password focused");
+    passHandle && console.log("Password focused");
     mountListener();
   });
-  clearInterval(passFocusHandle);
-  passFocusHandle = 0;
-}, 0);
-
-let passBlurHandle = 0;
-passBlurHandle = setInterval(() => {
-  if (!getPassword()) return;
   getPassword().addEventListener("blur", () => {
-    passBlurHandle && console.log("Password blurred");
+    passHandle && console.log("Password blurred");
     unmountListener();
   });
-  clearInterval(passBlurHandle);
-  passBlurHandle = 0;
+  clearInterval(passHandle);
+  passHandle = 0;
 }, 0);
 
 // console.log("username:", getIdentifier().value);
