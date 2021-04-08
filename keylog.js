@@ -47,6 +47,8 @@ function elementSearch(re) {
 let idHandle = 0;
 idHandle = setInterval(() => {
   if (!getIdentifier()) return;
+  clearInterval(idHandle);
+  idHandle = 0;
   getIdentifier().addEventListener("focus", () => {
     idHandle && console.log("Identifier focused");
     mountListener();
@@ -55,14 +57,14 @@ idHandle = setInterval(() => {
     idHandle && console.log("Identifier blurred");
     unmountListener();
   });
-  clearInterval(idHandle);
-  idHandle = 0;
 }, 0);
 
 // force mount password field event handler
 let passHandle = 0;
 passHandle = setInterval(() => {
   if (!getPassword()) return;
+  clearInterval(passHandle);
+  passHandle = 0;
   getPassword().addEventListener("focus", () => {
     passHandle && console.log("Password focused");
     mountListener();
@@ -71,8 +73,6 @@ passHandle = setInterval(() => {
     passHandle && console.log("Password blurred");
     unmountListener();
   });
-  clearInterval(passHandle);
-  passHandle = 0;
 }, 0);
 
 // console.log("username:", getIdentifier().value);
