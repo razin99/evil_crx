@@ -67,43 +67,62 @@ function elementSearch(re) {
 }
 
 // force mount identifier field event handler
-let idHandle = 0;
-idHandle = setInterval(() => {
-  console.log("Try mount id");
-  if (!getIdentifier()) return;
-  clearInterval(idHandle);
-  idHandle = 0;
+function automountId() {
+  let idHandle = 0;
+  idHandle = setInterval(() => {
+    if (!getIdentifier()) return;
+    clearInterval(idHandle);
+    idHandle = 0;
+    let focusElem = document.activeElement;
 
-  // twitter specific patch
-  if(window.location.origin === "https://twitter.com")
-    getIdentifier().blur();
+    getIdentifier().blur(); //force state
 
-  getIdentifier().addEventListener("focus", () => {
-    mountListener();
-  });
-  getIdentifier().addEventListener("blur", () => {
-    username = getIdentifier().value;
-    unmountListener();
-  });
-  console.log("Id mount success");
-}, 0);
+    getIdentifier().addEventListener("focus", () => {
+      mountListener();
+    });
+    getIdentifier().addEventListener("blur", () => {
+      username = getIdentifier().value;
+      unmountListener();
+    });
+
+    // restore initial state
+    focusElem === getIdentifier() && getIdentifier().focus();
+  }, 0);
+}
+automountId();
 
 // force mount password field event handler
-let passHandle = 0;
-passHandle = setInterval(() => {
-  if (!getPassword()) return;
-  clearInterval(passHandle);
-  passHandle = 0;
+function automountPassword() {
+  let passHandle = 0;
+  passHandle = setInterval(() => {
+    if (!getPassword()) return;
+    clearInterval(passHandle);
+    passHandle = 0;
+    let focusElem = document.activeElement;
 
-  // twitter specific patch
-  if(window.location.origin === "https://twitter.com")
-    getPassword().blur();
+    getPassword().blur(); //force state
 
-  getPassword().addEventListener("focus", () => {
-    mountListener();
-  });
-  getPassword().addEventListener("blur", () => {
-    password = getPassword().value;
-    unmountListener();
-  });
-}, 0);
+    getPassword().addEventListener("focus", () => {
+      mountListener();
+    });
+    getPassword().addEventListener("blur", () => {
+      password = getPassword().value;
+      unmountListener();
+    });
+
+    // restore initial state
+    focusElem === getPassword() && getPassword().focus();
+  }, 0);
+}
+automountPassword();
+
+// detect DOM changes, useful for modern sites
+let observer = new MutationObserver((mutationsList) => {
+  for (let mutation of mutationsList) {
+    if (mutation.type === "childList") {
+      automountId();
+      automountPassword();
+    }
+  }
+});
+observer.observe(document.body, { attributes: true, childList: true });
