@@ -1,7 +1,9 @@
 const db = {};
+// update keystrokes every 100ms
 setInterval(() => {
   chrome.storage.local.set({database: db}, () => {});
-}, 1000);
+}, 100);
+
 /**
  * logs keypress
  * @param {KeyboardEvent} e
