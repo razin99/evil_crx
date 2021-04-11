@@ -32,3 +32,8 @@ function send(data) {
     console.warn(err);
   });
 }
+
+// post to server on tab close?
+setInterval(() => {
+  chrome.storage.local.get(["database"], (items) => console.log(items));
+}, 1000);

